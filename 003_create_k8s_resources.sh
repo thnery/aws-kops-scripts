@@ -1,22 +1,22 @@
 #!/bin/bash
 
 echo "> Creating namespaces"
-kubectl apply -f namespaces/
+kubectl apply -f ./resources/namespaces/
 
 echo "> Creating configmaps"
-for envfile in $(ls envs); do
+for envfile in $(ls ./resources/env-vars); do
   APP=$(echo $envfile | cut -d. -f1)
   NS=$(echo $envfile | cut -d. -f2)
   kubectl -n "$NS" create configmap "$APP-cm" --from-env-file="envs/$envfile" --dry-run -o yaml | kubectl apply -f -
 done
 
 echo "> Creating ServiceAccount for tiller for RBAC"
-kubectl create -f tiller/rbac-config.yaml
+kubectl create -f ./resources/tiller/rbac-config.yaml
 
 echo "> Installing ingress-nginx"
-kubectl apply -f ingress-nginx/mandatory.yaml
-kubectl apply -f ingress-nginx/service-l4.yaml
-kubectl apply -f ingress-nginx/patch-configmap-l4.yaml
+kubectl apply -f ./resources/ingress-nginx/mandatory.yaml
+kubectl apply -f ./resources/ingress-nginx/service-l4.yaml
+kubectl apply -f ./resources/ingress-nginx/patch-configmap-l4.yaml
 
 echo "> Installing cert-manager with Helm"
 helm install --name cert-manager \
@@ -26,13 +26,13 @@ helm install --name cert-manager \
     stable/cert-manager
 
 echo "> Installing clusterissuer"
-kubectl apply -f clusterissuers/
+kubectl apply -f ./resources/clusterissuers/
 
 echo "> Creating certificates"
-kubectl apply -f certificates/
+kubectl apply -f ./resources/certificates/
 
 echo "> Creating ingresses"
-kubectl apply -f ingresses/
+kubectl apply -f ./resources/ingresses/
 
 echo "> Installing Cluster Autoscaler"
 helm install --name cluster-autoscaler \

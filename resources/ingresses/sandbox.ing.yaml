@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sandbox-ingress
+  namespace: sandbox
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  tls:
+  - hosts:
+    - sandbox.example.com
+    secretName: sandbox-example-com-tls
+  rules:
+  - host: sandbox.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: sandbox-api
+          servicePort: 80
