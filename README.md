@@ -3,6 +3,10 @@
   This repository contains scripts to automate VPC and Cluster creation on AWS and also 
 create mandatory Kubernetes resources for running a production application.
 
+## Requirements
+  
+  * JQ `brew install jq` or `pip install jq`
+
 ## How-to
 
   The steps below will create the VPC and the Cluster.
